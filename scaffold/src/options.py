@@ -28,6 +28,10 @@ def args_parser():
                         help='file name.')
     parser.add_argument('--seed', type=int, default = 2022,
                         help="random seed")
+    parser.add_argument('--fixed', type=int, default = 0,
+                        help="fixed local epoch number, 1 for fixed")
+    parser.add_argument('--threshold', type=float, default = 0.5,
+                        help="client threshold to random choose lcoal epochs")
     parser.add_argument('--optimizer', type=str, default='sgd', help="type \
                         of optimizer")
     parser.add_argument('--momentum', type=float, default=0,

@@ -19,10 +19,17 @@ def args_parser():
                         of dataset")
     parser.add_argument('--iid', type=int, default=0,
                         help='Default set to IID. Set to 0 for non-IID.')
+    parser.add_argument('--unequal', type=int, default=1,
+                        help='whether to use unequal data splits for  \
+                        non-i.i.d setting (use 0 for equal splits)')
     parser.add_argument('--file_name', type=str, default='admm07_m',
                         help='file name.')
     parser.add_argument('--seed', type=int, default = 2022,
                         help="random seed")
+    parser.add_argument('--fixed', type=int, default = 0,
+                        help="fixed local epoch number, 1 for fixed")
+    parser.add_argument('--threshold', type=float, default = 0.5,
+                        help="client threshold to random choose local epochs")
     parser.add_argument('--optimizer', type=str, default='sgd', help="type \
                         of optimizer")
     parser.add_argument('--momentum', type=float, default=0.5,

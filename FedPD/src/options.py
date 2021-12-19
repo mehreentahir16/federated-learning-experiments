@@ -31,12 +31,10 @@ def args_parser():
                         help='file name.')
     parser.add_argument('--seed', type=int, default = 2022,
                         help="random seed")
-    parser.add_argument('--fixed', type=int, default = 1,
+    parser.add_argument('--fixed', type=int, default = 0,
                         help="fixed local epochs, 1 for fixed")
-    parser.add_argument('--threshold', type=float, default = 1.0,
-                        help="client threshold to random choose lcoal epochs")
-    # parser.add_argument('--eta', type=float, default = 1.0,
-    #                     help="learning rate of global model")
+    parser.add_argument('--threshold', type=float, default = 0.5,
+                        help="client threshold to random choose local epochs")
 
     parser.add_argument('--optimizer', type=str, default='sgd', help="type \
                         of optimizer")
