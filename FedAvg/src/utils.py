@@ -3,7 +3,7 @@ import torch
 import numpy as np
 import random
 from torchvision import datasets, transforms
-from sampling import mnist_iid, mnist_noniid
+from sampling import mnist_iid, mnist_noniid, mnist_noniid_unequal
 
 def setup_seed(seed):
     torch.manual_seed(seed)
@@ -28,6 +28,8 @@ def get_dataset(args):
 
     if args.iid:
         user_groups = mnist_iid(train_dataset, args.num_users)
+    elif args.unequal == 1:
+        user_groups = mnist_noniid_unequal(train_dataset, args.num_users)
     else:
         user_groups = mnist_noniid(train_dataset, args.num_users)
 

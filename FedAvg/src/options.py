@@ -17,7 +17,7 @@ def args_parser():
     parser.add_argument('--model', type=str, default='Model1', help='model name')
     parser.add_argument('--dataset', type=str, default='mnist', help="name \
                         of dataset")
-    parser.add_argument('--iid', type=int, default=1,
+    parser.add_argument('--iid', type=int, default=0,
                         help='Default set to IID. Set to 0 for non-IID.')
     parser.add_argument('--file_name', type=str, default='admm07_m',
                         help='file name.')

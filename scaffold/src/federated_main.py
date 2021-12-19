@@ -137,9 +137,9 @@ if __name__ == '__main__':
     plt.plot(range(len(train_loss)), train_loss, color='r')
     plt.ylabel('Training loss')
     plt.xlabel('Communication Rounds')
-    plt.savefig('../save/fed_{}_{}_user{}_globalepoch{}_C[{}]_iid[{}]_E[{}]_B[{}]_eta{}_mu{}_loss.png'.
+    plt.savefig('../save/fed_{}_{}_user{}_globalepoch{}_C[{}]_iid[{}]_E[{}]_B[{}]_eta{}_loss.png'.
                 format(args.dataset, args.model, args.num_users, args.epochs, args.frac,
-                       args.iid, args.local_ep, args.local_bs, args.lr, args.rho))
+                       args.iid, args.local_ep, args.local_bs, args.lr))
     #
     # # Plot Average Accuracy vs Communication rounds
     plt.figure()
@@ -147,18 +147,18 @@ if __name__ == '__main__':
     plt.plot(range(len(train_accuracy)), train_accuracy, color='b')
     plt.ylabel('Average Accuracy')
     plt.xlabel('Communication Rounds')
-    plt.savefig('../save/fed_{}_{}_user{}_globalepoch{}_C[{}]_iid[{}]_E[{}]_B[{}]_eta{}_mu{}_train_acc.png'.
+    plt.savefig('../save/fed_{}_{}_user{}_globalepoch{}_C[{}]_iid[{}]_E[{}]_B[{}]_eta{}_train_acc.png'.
                 format(args.dataset, args.model, args.num_users, args.epochs, args.frac,
-                       args.iid, args.local_ep, args.local_bs, args.lr, args.rho))
+                       args.iid, args.local_ep, args.local_bs, args.lr))
     # Plot test Accuracy vs Communication rounds
     plt.figure()
     plt.title('test_acc vs Communication rounds')
     plt.plot(range(len(test_acc)), test_acc, color='r')
     plt.ylabel('test_acc')
     plt.xlabel('Communication Rounds')
-    plt.savefig('../save/fed_{}_{}_user{}_globalepoch{}_C[{}]_iid[{}]_E[{}]_B[{}]_eta{}_mu{}_test_acc.png'.
+    plt.savefig('../save/fed_{}_{}_user{}_globalepoch{}_C[{}]_iid[{}]_E[{}]_B[{}]_eta{}_test_acc.png'.
                 format(args.dataset, args.model, args.num_users, args.epochs, args.frac,
-                       args.iid, args.local_ep, args.local_bs, args.lr, args.rho))
+                       args.iid, args.local_ep, args.local_bs, args.lr))
     
     # Plot test loss vs Communication rounds
     plt.figure()
@@ -166,6 +166,6 @@ if __name__ == '__main__':
     plt.plot(range(len(test_loss)), test_loss, color='r')
     plt.ylabel('test_loss')
     plt.xlabel('Communication Rounds')
-    plt.savefig('../save/fed_{}_{}_user{}_globalepoch{}_C[{}]_iid[{}]_E[{}]_B[{}]_eta{}_mu{}_test_loss.png'.
+    plt.savefig('../save/fed_{}_{}_user{}_globalepoch{}_C[{}]_iid[{}]_E[{}]_B[{}]_eta{}_test_loss.png'.
                 format(args.dataset, args.model, args.num_users, args.epochs, args.frac,
-                       args.iid, args.local_ep, args.local_bs, args.lr, args.rho))
+                       args.iid, args.local_ep, args.local_bs, args.lr))
