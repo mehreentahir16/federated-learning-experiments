@@ -37,11 +37,13 @@ class LocalUpdate(object):
         model_prev = copy.deepcopy(model.state_dict())
         alpha_prev = copy.deepcopy(alpha)
 
-        E = 0
+        E = 1
         if self.args.fixed == 1:
             E = self.args.local_ep
         else:
-            E = random.randint(1, self.args.local_ep)
+            x = random.uniform(0, 1) 
+            if x <= self.args.threshold:
+                E = random.randint(1, self.args.local_ep) 
         for iter in range(E):
             batch_loss = []
             for batch_idx, (images, labels) in enumerate(self.trainloader):

@@ -37,15 +37,13 @@ class LocalUpdate(object):
         model_weights_cur = copy.deepcopy(model.state_dict()) 
         epoch_loss = []
         optimizer = torch.optim.SGD(model.parameters(), lr=self.args.lr, momentum=self.args.momentum)
-        E = 0
+        E = 1
         if self.args.fixed == 1:
             E = self.args.local_ep
         else:
             x = random.uniform(0, 1) 
             if x <= self.args.threshold:
                 E = random.randint(1, self.args.local_ep) 
-            else:
-                E = self.args.local_ep
         for iter in range(E):
             batch_loss = []
             for batch_idx, (images, labels) in enumerate(self.trainloader):
