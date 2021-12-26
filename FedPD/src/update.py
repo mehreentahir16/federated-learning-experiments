@@ -29,22 +29,15 @@ class LocalUpdate(object):
         trainloader = DataLoader(DatasetSplit(dataset, idxs_train), batch_size=self.args.local_bs, shuffle=True)
         return trainloader
 
-    def update_weights(self, model, global_round, alpha, theta):
+    def update_weights(self, model, global_round, alpha, theta, local_epoch):
         local_sum = {}
         model.train()
         epoch_loss = []
         optimizer = torch.optim.SGD(model.parameters(), lr=self.args.lr, momentum=self.args.momentum)
         model_prev = copy.deepcopy(model.state_dict())
         alpha_prev = copy.deepcopy(alpha)
-
-        E = 1
-        if self.args.fixed == 1:
-            E = self.args.local_ep
-        else:
-            x = random.uniform(0, 1) 
-            if x <= self.args.threshold:
-                E = random.randint(1, self.args.local_ep) 
-        for iter in range(E):
+    
+        for iter in range(local_epoch):
             batch_loss = []
             for batch_idx, (images, labels) in enumerate(self.trainloader):
                 images, labels = images.to(self.args.device), labels.to(self.args.device)

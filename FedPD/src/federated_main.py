@@ -11,8 +11,8 @@ from tensorboardX import SummaryWriter
 
 from options import args_parser
 from update import LocalUpdate, test_inference
-from models import Model1
-from utils import get_dataset, average_weights, exp_details, setup_seed
+from models import mnist_cnn
+from utils import get_dataset, average_weights, exp_details, setup_seed, generateLocalEpochs
 
 os.environ['KMP_DUPLICATE_LIB_OK'] = 'TRUE'
 # os.environ['CUDA_VISIBLE_DEVICES'] = '0'
@@ -36,8 +36,8 @@ if __name__ == '__main__':
 
     local_model, model, alpha, local_theta = [], [], [], []
 
-    if args.model == 'Model1':
-        global_model = Model1(args=args)
+    if args.model == 'mnist_cnn':
+        global_model = mnist_cnn(args=args)
     else:
         exit('Error: unrecognized model')
 
@@ -78,8 +78,12 @@ if __name__ == '__main__':
         m = max(int(args.frac * args.num_users), 1)
         idxs_users = np.random.choice(range(args.num_users), m, replace=False)
 
-        for idx in idxs_users:        
-            loss, lsum, model[idx], alpha[idx] = local_model[idx].update_weights(model[idx], global_round=epoch, alpha=alpha[idx], theta=local_theta[idx])
+        heterogenous_epoch_list = generateLocalEpochs(size=m, args=args)
+        heterogenous_epoch_list = np.array(heterogenous_epoch_list)
+
+        for idx, ep in zip(idxs_users, heterogenous_epoch_list): 
+ 
+            loss, lsum, model[idx], alpha[idx] = local_model[idx].update_weights(model[idx], global_round=epoch, alpha=alpha[idx], theta=local_theta[idx], local_epoch=ep)
             local_theta[idx] = copy.deepcopy(lsum)
             local_losses.append(copy.deepcopy(loss))
             local_sum.append(copy.deepcopy(lsum))
@@ -136,9 +140,9 @@ if __name__ == '__main__':
     plt.plot(range(len(train_loss)), train_loss, color='r')
     plt.ylabel('Training loss')
     plt.xlabel('Communication Rounds')
-    plt.savefig('../save/fed_threshold0.2_{}_{}_user{}_globalepoch{}_C[{}]_iid[{}]_E[{}]_B[{}]_eta{}_mu{}_loss.png'.
+    plt.savefig('../save/fed_{}_{}_user{}_globalepoch{}_C[{}]_iid[{}]_E[{}]_B[{}]_eta{}_mu{}_P[{}]_loss.png'.
                 format(args.dataset, args.model, args.num_users, args.epochs, args.frac,
-                       args.iid, args.local_ep, args.local_bs, args.lr, args.rho))
+                       args.iid, args.local_ep, args.local_bs, args.lr, args.rho, args.threshold))
     #
     # # Plot Average Accuracy vs Communication rounds
     plt.figure()
@@ -146,18 +150,18 @@ if __name__ == '__main__':
     plt.plot(range(len(train_accuracy)), train_accuracy, color='k')
     plt.ylabel('Average Accuracy')
     plt.xlabel('Communication Rounds')
-    plt.savefig('../save/fed_threshold0.2_{}_{}_user{}_globalepoch{}_C[{}]_iid[{}]_E[{}]_B[{}]_eta{}_mu{}_train_acc.png'.
+    plt.savefig('../save/fed_{}_{}_user{}_globalepoch{}_C[{}]_iid[{}]_E[{}]_B[{}]_eta{}_mu{}_P[{}]_train_acc.png'.
                 format(args.dataset, args.model, args.num_users, args.epochs, args.frac,
-                       args.iid, args.local_ep, args.local_bs, args.lr, args.rho))
+                       args.iid, args.local_ep, args.local_bs, args.lr, args.rho, args.threshold))
     # Plot test Accuracy vs Communication rounds
     plt.figure()
     plt.title('test_acc vs Communication rounds')
     plt.plot(range(len(test_acc)), test_acc, color='r')
     plt.ylabel('test_acc')
     plt.xlabel('Communication Rounds')
-    plt.savefig('../save/fed_threshold0.2_{}_{}_user{}_globalepoch{}_C[{}]_iid[{}]_E[{}]_B[{}]_eta{}_mu{}_test_acc.png'.
+    plt.savefig('../save/fed_{}_{}_user{}_globalepoch{}_C[{}]_iid[{}]_E[{}]_B[{}]_eta{}_mu{}_P[{}]_test_acc.png'.
                 format(args.dataset, args.model, args.num_users, args.epochs, args.frac,
-                       args.iid, args.local_ep, args.local_bs, args.lr, args.rho))
+                       args.iid, args.local_ep, args.local_bs, args.lr, args.rho, args.threshold))
     
     # Plot test loss vs Communication rounds
     plt.figure()
@@ -165,6 +169,6 @@ if __name__ == '__main__':
     plt.plot(range(len(test_loss)), test_loss, color='r')
     plt.ylabel('test_loss')
     plt.xlabel('Communication Rounds')
-    plt.savefig('../save/fed_threshold0.2_{}_{}_user{}_globalepoch{}_C[{}]_iid[{}]_E[{}]_B[{}]_eta{}_mu{}_test_loss.png'.
+    plt.savefig('../save/fed_{}_{}_user{}_globalepoch{}_C[{}]_iid[{}]_E[{}]_B[{}]_eta{}_mu{}_P[{}]_test_loss.png'.
                 format(args.dataset, args.model, args.num_users, args.epochs, args.frac,
-                       args.iid, args.local_ep, args.local_bs, args.lr, args.rho))
+                       args.iid, args.local_ep, args.local_bs, args.lr, args.rho, args.threshold))

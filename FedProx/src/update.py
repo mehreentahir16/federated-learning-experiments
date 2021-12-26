@@ -32,19 +32,13 @@ class LocalUpdate(object):
                                  batch_size=self.args.local_bs, shuffle=True)
         return trainloader
 
-    def update_weights(self, model, global_round):
+    def update_weights(self, model, global_round, local_epoch):
         model.train()
         model_weights_cur = copy.deepcopy(model.state_dict()) 
         epoch_loss = []
         optimizer = torch.optim.SGD(model.parameters(), lr=self.args.lr, momentum=self.args.momentum)
-        E = 1
-        if self.args.fixed == 1:
-            E = self.args.local_ep
-        else:
-            x = random.uniform(0, 1) 
-            if x <= self.args.threshold:
-                E = random.randint(1, self.args.local_ep) 
-        for iter in range(E):
+
+        for iter in range(local_epoch):
             batch_loss = []
             for batch_idx, (images, labels) in enumerate(self.trainloader):
                 images, labels = images.to(self.args.device), labels.to(self.args.device)

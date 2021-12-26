@@ -44,6 +44,40 @@ def average_weights(w):
         w_avg[key] = torch.div(w_avg[key], len(w))
     return w_avg
 
+def generateLocalEpochs(size, args):
+  ''' Method generates list of epochs for selected clients
+  to replicate system heteroggeneity
+
+  Params:
+    threshold: threshold of clients to have fewer than E epochs
+    size:       total size of the list
+    max_epochs: maximum value for local epochs
+  
+  Returns:
+    List of size epochs for each Client Update
+
+  '''
+
+  # if threshold is 0 then each client runs for E epochs
+  if args.threshold == 0:
+      return np.array([args.epochs]*size)
+  else:
+    # get the number of clients to have fewer than E epochs
+    stragglers = int((args.threshold/100) * size)
+
+    # generate random uniform epochs of heterogenous size between 1 and E
+    epoch_list = np.random.randint(1, args.local_ep, stragglers)
+
+    # the rest of the clients will have E epochs
+    remaining_size = size - stragglers
+    rem_list = [args.local_ep]*remaining_size
+
+    epoch_list = np.append(epoch_list, rem_list, axis=0)
+    
+    # shuffle the list and return
+    np.random.shuffle(epoch_list)
+
+    return epoch_list
 
 def exp_details(args):
     print('\nExperimental details:')

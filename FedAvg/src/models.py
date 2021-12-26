@@ -3,9 +3,9 @@ import torch.nn.functional as F
 
 # Mnist & fmnist 
 # CNN 1,  1,663,370 total parameters.
-class Model1(nn.Module):
+class mnist_cnn(nn.Module):
     def __init__(self, args):
-        super(Model1, self).__init__()
+        super(mnist_cnn, self).__init__()
 
         self.conv = nn.Sequential(
             nn.Conv2d(1, 32, kernel_size=5, padding=2, bias=True),
