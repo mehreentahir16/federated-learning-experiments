@@ -60,15 +60,22 @@ if __name__ == '__main__':
         global_model.train()
         m = max(int(args.frac * args.num_users), 1)
         idxs_users = np.random.choice(range(args.num_users), m, replace=False)
+        if args.threshold == 0:
+            for idx in idxs_users: 
+                local_model = LocalUpdate(args=args, dataset=train_dataset, idxs=user_groups[idx], logger=logger)
+                w, loss = local_model.update_weights(model=copy.deepcopy(global_model), global_round=epoch, local_epoch=10)
+                local_weights.append(copy.deepcopy(w))
+                local_losses.append(copy.deepcopy(loss))
 
-        heterogenous_epoch_list = generateLocalEpochs(size=m, args=args)
-        heterogenous_epoch_list = np.array(heterogenous_epoch_list)
+        else:
+            heterogenous_epoch_list = generateLocalEpochs(size=m, args=args)
+            heterogenous_epoch_list = np.array(heterogenous_epoch_list)
 
-        for idx, ep in zip(idxs_users, heterogenous_epoch_list): 
-            local_model = LocalUpdate(args=args, dataset=train_dataset, idxs=user_groups[idx], logger=logger)
-            w, loss = local_model.update_weights(model=copy.deepcopy(global_model), global_round=epoch, local_epoch=ep)
-            local_weights.append(copy.deepcopy(w))
-            local_losses.append(copy.deepcopy(loss))
+            for idx, ep in zip(idxs_users, heterogenous_epoch_list): 
+                local_model = LocalUpdate(args=args, dataset=train_dataset, idxs=user_groups[idx], logger=logger)
+                w, loss = local_model.update_weights(model=copy.deepcopy(global_model), global_round=epoch, local_epoch=ep)
+                local_weights.append(copy.deepcopy(w))
+                local_losses.append(copy.deepcopy(loss))
 
         global_weights = average_weights(local_weights)
 
@@ -101,7 +108,7 @@ if __name__ == '__main__':
     print(f' \n Results after {args.epochs} global rounds of training:')
     print("|---- Test Accuracy: {:.2f}%".format(100*test_acc[-1]))
 
-    file_name = '../save/{}_{}.pkl'.format(args.file_name, args.seed)
+    file_name = '../save/new/{}_{}.pkl'.format(args.file_name, args.seed)
 
     with open(file_name, 'wb') as f:
         pickle.dump([train_loss, test_acc], f)
@@ -119,7 +126,7 @@ if __name__ == '__main__':
     plt.plot(range(len(train_loss)), train_loss, color='r')
     plt.ylabel('Training loss')
     plt.xlabel('Communication Rounds')
-    plt.savefig('../save/fed_{}_{}_{}_C[{}]_iid[{}]_E[{}]_B[{}]_P[{}]_loss.png'.
+    plt.savefig('../save/new/fed_{}_{}_{}_C[{}]_iid[{}]_E[{}]_B[{}]_P[{}]_loss.png'.
                 format(args.dataset, args.model, args.epochs, args.frac,
                        args.iid, args.local_ep, args.local_bs, args.threshold))
     
@@ -129,6 +136,6 @@ if __name__ == '__main__':
     plt.plot(range(len(train_accuracy)), train_accuracy, color='k')
     plt.ylabel('Average Accuracy')
     plt.xlabel('Communication Rounds')
-    plt.savefig('../save/fed_{}_{}_{}_C[{}]_iid[{}]_E[{}]_B[{}]_P[{}]_acc.png'.
+    plt.savefig('../save/new/fed_{}_{}_{}_C[{}]_iid[{}]_E[{}]_B[{}]_P[{}]_acc.png'.
                 format(args.dataset, args.model, args.epochs, args.frac,
                        args.iid, args.local_ep, args.local_bs, args.threshold))

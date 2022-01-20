@@ -77,16 +77,24 @@ if __name__ == '__main__':
         global_model.train()
         m = max(int(args.frac * args.num_users), 1)
         idxs_users = np.random.choice(range(args.num_users), m, replace=False)
-
-        heterogenous_epoch_list = generateLocalEpochs(size=m, args=args)
-        heterogenous_epoch_list = np.array(heterogenous_epoch_list)
-
-        for idx, ep in zip(idxs_users, heterogenous_epoch_list): 
+        if args.threshold == 0:
+            for idx in idxs_users: 
  
-            loss, lsum, model[idx], alpha[idx] = local_model[idx].update_weights(model[idx], global_round=epoch, alpha=alpha[idx], theta=local_theta[idx], local_epoch=ep)
-            local_theta[idx] = copy.deepcopy(lsum)
-            local_losses.append(copy.deepcopy(loss))
-            local_sum.append(copy.deepcopy(lsum))
+                loss, lsum, model[idx], alpha[idx] = local_model[idx].update_weights(model[idx], global_round=epoch, alpha=alpha[idx], theta=local_theta[idx], local_epoch=10)
+                local_theta[idx] = copy.deepcopy(lsum)
+                local_losses.append(copy.deepcopy(loss))
+                local_sum.append(copy.deepcopy(lsum))
+                
+        else: 
+            heterogenous_epoch_list = generateLocalEpochs(size=m, args=args)
+            heterogenous_epoch_list = np.array(heterogenous_epoch_list)
+
+            for idx, ep in zip(idxs_users, heterogenous_epoch_list): 
+ 
+                loss, lsum, model[idx], alpha[idx] = local_model[idx].update_weights(model[idx], global_round=epoch, alpha=alpha[idx], theta=local_theta[idx], local_epoch=ep)
+                local_theta[idx] = copy.deepcopy(lsum)
+                local_losses.append(copy.deepcopy(loss))
+                local_sum.append(copy.deepcopy(lsum))
 
         a = random.random()
         if a > args.prob:
@@ -123,7 +131,7 @@ if __name__ == '__main__':
     print(f' \n Results after {args.epochs} global rounds of training:')
     print("|---- Test Accuracy: {:.2f}%".format(100*test_acc[-1]))
 
-    file_name = '../save/{}_{}.pkl'.format(args.file_name, args.seed)
+    file_name = '../save/new/{}_{}.pkl'.format(args.file_name, args.seed)
 
     with open(file_name, 'wb') as f:
         pickle.dump([train_loss, test_acc], f)
@@ -140,7 +148,7 @@ if __name__ == '__main__':
     plt.plot(range(len(train_loss)), train_loss, color='r')
     plt.ylabel('Training loss')
     plt.xlabel('Communication Rounds')
-    plt.savefig('../save/fed_{}_{}_user{}_globalepoch{}_C[{}]_iid[{}]_E[{}]_B[{}]_eta{}_mu{}_P[{}]_loss.png'.
+    plt.savefig('../save/new/fed_{}_{}_user{}_globalepoch{}_C[{}]_iid[{}]_E[{}]_B[{}]_eta{}_mu{}_P[{}]_loss.png'.
                 format(args.dataset, args.model, args.num_users, args.epochs, args.frac,
                        args.iid, args.local_ep, args.local_bs, args.lr, args.rho, args.threshold))
     #
@@ -150,7 +158,7 @@ if __name__ == '__main__':
     plt.plot(range(len(train_accuracy)), train_accuracy, color='k')
     plt.ylabel('Average Accuracy')
     plt.xlabel('Communication Rounds')
-    plt.savefig('../save/fed_{}_{}_user{}_globalepoch{}_C[{}]_iid[{}]_E[{}]_B[{}]_eta{}_mu{}_P[{}]_train_acc.png'.
+    plt.savefig('../save/new/fed_{}_{}_user{}_globalepoch{}_C[{}]_iid[{}]_E[{}]_B[{}]_eta{}_mu{}_P[{}]_train_acc.png'.
                 format(args.dataset, args.model, args.num_users, args.epochs, args.frac,
                        args.iid, args.local_ep, args.local_bs, args.lr, args.rho, args.threshold))
     # Plot test Accuracy vs Communication rounds
@@ -159,7 +167,7 @@ if __name__ == '__main__':
     plt.plot(range(len(test_acc)), test_acc, color='r')
     plt.ylabel('test_acc')
     plt.xlabel('Communication Rounds')
-    plt.savefig('../save/fed_{}_{}_user{}_globalepoch{}_C[{}]_iid[{}]_E[{}]_B[{}]_eta{}_mu{}_P[{}]_test_acc.png'.
+    plt.savefig('../save/new/fed_{}_{}_user{}_globalepoch{}_C[{}]_iid[{}]_E[{}]_B[{}]_eta{}_mu{}_P[{}]_test_acc.png'.
                 format(args.dataset, args.model, args.num_users, args.epochs, args.frac,
                        args.iid, args.local_ep, args.local_bs, args.lr, args.rho, args.threshold))
     
@@ -169,6 +177,6 @@ if __name__ == '__main__':
     plt.plot(range(len(test_loss)), test_loss, color='r')
     plt.ylabel('test_loss')
     plt.xlabel('Communication Rounds')
-    plt.savefig('../save/fed_{}_{}_user{}_globalepoch{}_C[{}]_iid[{}]_E[{}]_B[{}]_eta{}_mu{}_P[{}]_test_loss.png'.
+    plt.savefig('../save/new/fed_{}_{}_user{}_globalepoch{}_C[{}]_iid[{}]_E[{}]_B[{}]_eta{}_mu{}_P[{}]_test_loss.png'.
                 format(args.dataset, args.model, args.num_users, args.epochs, args.frac,
                        args.iid, args.local_ep, args.local_bs, args.lr, args.rho, args.threshold))

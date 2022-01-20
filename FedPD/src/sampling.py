@@ -12,20 +12,48 @@ def mnist_iid(dataset, num_users):
     return dict_users
 
 
+# def mnist_noniid(dataset, num_users):
+#     if num_users == 100: 
+#         num_shards, num_imgs = 1000, 60
+#     else:
+#         num_shards, num_imgs = 2000, 30
+#     idx_shard = [i for i in range(num_shards)]
+#     dict_users = {i: np.array([]) for i in range(num_users)}
+#     idxs = np.arange(num_shards*num_imgs)
+#     labels = dataset.targets.numpy()
+
+#     idxs_labels = np.vstack((idxs, labels))
+#     idxs_labels = idxs_labels[:, idxs_labels[1, :].argsort()]
+#     idxs = idxs_labels[0, :]
+
+#     for i in range(num_users):
+#         rand_set = set(np.random.choice(idx_shard, 2, replace=False))
+#         idx_shard = list(set(idx_shard) - rand_set)
+#         for rand in rand_set:
+#             dict_users[i] = np.concatenate(
+#                 (dict_users[i], idxs[rand*num_imgs:(rand+1)*num_imgs]), axis=0)
+#     return dict_users
+
 def mnist_noniid(dataset, num_users):
-    if num_users == 100: 
-        num_shards, num_imgs = 1000, 60
-    else:
-        num_shards, num_imgs = 2000, 30
+    """
+    Sample non-I.I.D client data from MNIST dataset
+    :param dataset:
+    :param num_users:
+    :return:
+    """
+    # 60,000 training imgs -->  200 imgs/shard X 300 shards
+    num_shards, num_imgs = 200, 300
     idx_shard = [i for i in range(num_shards)]
     dict_users = {i: np.array([]) for i in range(num_users)}
     idxs = np.arange(num_shards*num_imgs)
-    labels = dataset.targets.numpy()
+    labels = dataset.train_labels.numpy()
 
+    # sort labels
     idxs_labels = np.vstack((idxs, labels))
     idxs_labels = idxs_labels[:, idxs_labels[1, :].argsort()]
     idxs = idxs_labels[0, :]
 
+    # divide and assign 2 shards/client
     for i in range(num_users):
         rand_set = set(np.random.choice(idx_shard, 2, replace=False))
         idx_shard = list(set(idx_shard) - rand_set)
@@ -43,8 +71,8 @@ def mnist_noniid_unequal(dataset, num_users):
     :returns a dict of clients with each clients assigned certain
     number of training imgs
     """
-    # 60,000 training imgs --> 50 imgs/shard X 1200 shards
-    num_shards, num_imgs = 1200, 50
+    # 60,000 training imgs --> 100 imgs/shard X 600 shards
+    num_shards, num_imgs = 1000, 60
     idx_shard = [i for i in range(num_shards)]
     dict_users = {i: np.array([]) for i in range(num_users)}
     idxs = np.arange(num_shards*num_imgs)
@@ -57,7 +85,7 @@ def mnist_noniid_unequal(dataset, num_users):
 
     # Minimum and maximum shards assigned per client:
     min_shard = 1
-    max_shard = 30
+    max_shard = 500
 
     # Divide the shards into random chunks for every client
     # s.t the sum of these chunks = num_shards

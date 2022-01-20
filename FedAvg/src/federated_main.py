@@ -103,7 +103,7 @@ if __name__ == '__main__':
     print(f' \n Results after {args.epochs} global rounds of training:')
     print("|---- Test Accuracy: {:.2f}%".format(100*test_acc[-1]))
 
-    file_name = '../save/{}_{}.pkl'.format(args.file_name, args.seed)
+    file_name = '../save/new/{}_{}.pkl'.format(args.file_name, args.seed)
 
     with open(file_name, 'wb') as f:
         pickle.dump([train_loss, test_acc], f)
@@ -121,7 +121,7 @@ if __name__ == '__main__':
     plt.plot(range(len(train_loss)), train_loss, color='r')
     plt.ylabel('Training loss')
     plt.xlabel('Communication Rounds')
-    plt.savefig('../save/fed_{}_{}_{}_C[{}]_iid[{}]_E[{}]_B[{}]_loss_P[{}].png'.
+    plt.savefig('../save/new/fed_{}_{}_{}_C[{}]_iid[{}]_E[{}]_B[{}]_loss_P[{}].png'.
                 format(args.dataset, args.model, args.epochs, args.frac,
                        args.iid, args.local_ep, args.local_bs, args.threshold))
     
@@ -131,6 +131,6 @@ if __name__ == '__main__':
     plt.plot(range(len(train_accuracy)), train_accuracy, color='k')
     plt.ylabel('Average Accuracy')
     plt.xlabel('Communication Rounds')
-    plt.savefig('../save/fed_{}_{}_{}_C[{}]_iid[{}]_E[{}]_B[{}]_acc_P[{}].png'.
+    plt.savefig('../save/new/fed_{}_{}_{}_C[{}]_iid[{}]_E[{}]_B[{}]_acc_P[{}].png'.
                 format(args.dataset, args.model, args.epochs, args.frac,
                        args.iid, args.local_ep, args.local_bs, args.threshold))

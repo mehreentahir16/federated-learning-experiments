@@ -15,9 +15,9 @@ def args_parser():
                         help="local batch size: B")
     parser.add_argument('--lr', type=float, default = 0.01,
                         help='learning rate')
-    parser.add_argument('--rho', type=float, default = 0.01,
+    parser.add_argument('--rho', type=float, default = 0.1,
                         help='hpy')
-    parser.add_argument('--prob', type=float, default = 0.5,
+    parser.add_argument('--prob', type=float, default = 0,
                         help='jump communication prob')
     parser.add_argument('--model', type=str, default='mnist_cnn', help='model name')
     parser.add_argument('--dataset', type=str, default='mnist', help="name \
@@ -29,7 +29,7 @@ def args_parser():
                         non-i.i.d setting (use 0 for equal splits)')
     parser.add_argument('--file_name', type=str, default='FedPD',
                         help='file name.')
-    parser.add_argument('--seed', type=int, default = 2022,
+    parser.add_argument('--seed', type=int, default = 42,
                         help="random seed")
     parser.add_argument('--threshold', type=float, default = 0,
                         help="client threshold to random choose local epochs")

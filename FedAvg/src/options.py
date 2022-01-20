@@ -26,7 +26,7 @@ def args_parser():
                         help='file name.')
     parser.add_argument('--seed', type=int, default = 42,
                         help="random seed")
-    parser.add_argument('--threshold', type=float, default = 0,
+    parser.add_argument('--threshold', type=float, default = 70,
                         help="client threshold to random choose local epochs")
     parser.add_argument('--optimizer', type=str, default='sgd', help="type \
                         of optimizer")
