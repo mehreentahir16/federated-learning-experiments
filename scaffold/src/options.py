@@ -19,7 +19,7 @@ def args_parser():
     parser.add_argument('--model', type=str, default='mnist_cnn', help='model name')
     parser.add_argument('--dataset', type=str, default='mnist', help="name \
                         of dataset")
-    parser.add_argument('--iid', type=int, default=1,
+    parser.add_argument('--iid', type=int, default=0,
                         help='Default set to IID. Set to 0 for non-IID.')
     parser.add_argument('--unequal', type=int, default=0,
                         help='whether to use unequal data splits for  \
@@ -29,7 +29,7 @@ def args_parser():
     parser.add_argument('--seed', type=int, default = 42,
                         help="random seed")
     parser.add_argument('--threshold', type=float, default = 0,
-                        help="client threshold to random choose lcoal epochs")
+                        help="client threshold to random choose local epochs")
     parser.add_argument('--optimizer', type=str, default='sgd', help="type \
                         of optimizer")
     parser.add_argument('--momentum', type=float, default=0.5,

@@ -63,24 +63,14 @@ if __name__ == '__main__':
         c = 0
  
         idxs_users = np.random.choice(range(args.num_users), m, replace=False)
+        if args.threshold == 0:
+            for i in range(len(idxs_users)):
+                if c == newMedian:
+                    break
+                c += 1
 
-        for i in range(len(idxs_users)):
-            if c == newMedian:
-                break
-            c += 1
-
-        # heterogenous_epoch_list = generateLocalEpochs(size=m, args=args)
-        # heterogenous_epoch_list = np.array(heterogenous_epoch_list)
-
-        # stragglers_indices = np.argwhere(heterogenous_epoch_list < args.local_ep)
-
-        # idxs_active = np.delete(idxs_users, stragglers_indices)
-
-            for idx in idxs_users:
-                local_model = LocalUpdate(args=args, dataset=train_dataset, idxs=user_groups[idx], logger=logger)
+                local_model = LocalUpdate(args=args, dataset=train_dataset, idxs=user_groups[idxs_users[i]], logger=logger)
                 weights, loss = local_model.update_weights(model=copy.deepcopy(global_model), global_round=epoch)
-            # local_weights.append(copy.deepcopy(w))
-            # local_losses.append(copy.deepcopy(loss))
                 for k in weights.keys():
                     t = torch.Tensor(weights[k].shape)
                     t.fill_(0.1)
@@ -89,9 +79,38 @@ if __name__ == '__main__':
                 local_weights.append(copy.deepcopy(weights))
                 local_losses.append(copy.deepcopy(loss))
 
-        for k in range(newMedian, len(idxs_users)):
-            for idx in idxs_users:
-                local_model = LocalUpdate(args=args, dataset=train_dataset, idxs=user_groups[idx], logger=logger)
+            for k in range(newMedian, len(idxs_users)):
+                local_model = LocalUpdate(args=args, dataset=train_dataset, idxs=user_groups[idxs_users[k]], logger=logger)
+                weights, loss = local_model.update_weights(model=copy.deepcopy(global_model), global_round=epoch)
+      
+                local_weights.append(copy.deepcopy(weights))
+                local_losses.append(copy.deepcopy(loss))
+
+        else:
+            heterogenous_epoch_list = generateLocalEpochs(size=m, args=args)
+            heterogenous_epoch_list = np.array(heterogenous_epoch_list)
+
+            stragglers_indices = np.argwhere(heterogenous_epoch_list < args.local_ep)
+
+            idxs_active = np.delete(idxs_users, stragglers_indices)
+            
+            for i in range(len(idxs_active)):
+                if c == newMedian:
+                    break
+                c += 1
+
+                local_model = LocalUpdate(args=args, dataset=train_dataset, idxs=user_groups[idxs_active[i]], logger=logger)
+                weights, loss = local_model.update_weights(model=copy.deepcopy(global_model), global_round=epoch)
+                for k in weights.keys():
+                    t = torch.Tensor(weights[k].shape)
+                    t.fill_(0.1)
+                    weights[k] = t     
+
+                local_weights.append(copy.deepcopy(weights))
+                local_losses.append(copy.deepcopy(loss))
+
+            for k in range(newMedian, len(idxs_active)):
+                local_model = LocalUpdate(args=args, dataset=train_dataset, idxs=user_groups[idxs_users[k]], logger=logger)
                 weights, loss = local_model.update_weights(model=copy.deepcopy(global_model), global_round=epoch)
       
                 local_weights.append(copy.deepcopy(weights))
@@ -159,7 +178,7 @@ if __name__ == '__main__':
         global_model.eval()
         for c in range(args.num_users):
             local_model = LocalUpdate(args=args, dataset=train_dataset,
-                                      idxs=user_groups[idx], logger=logger)
+                                      idxs=user_groups[idxs_users[i]], logger=logger)
             acc, loss = local_model.inference(model=global_model)
             list_acc.append(acc)
             list_loss.append(loss)
@@ -195,7 +214,7 @@ if __name__ == '__main__':
     plt.plot(range(len(train_loss)), train_loss, color='r')
     plt.ylabel('Training loss')
     plt.xlabel('Communication Rounds')
-    plt.savefig('../save/fed_{}_{}_{}_C[{}]_iid[{}]_E[{}]_B[{}]_loss_P[{}].png'.
+    plt.savefig('../save/new/fed_{}_{}_{}_C[{}]_iid[{}]_E[{}]_B[{}]_loss_P[{}].png'.
                 format(args.dataset, args.model, args.epochs, args.frac,
                        args.iid, args.local_ep, args.local_bs, args.threshold))
     
@@ -205,7 +224,7 @@ if __name__ == '__main__':
     plt.plot(range(len(train_accuracy)), train_accuracy, color='k')
     plt.ylabel('Average Accuracy')
     plt.xlabel('Communication Rounds')
-    plt.savefig('../save/fed_{}_{}_{}_C[{}]_iid[{}]_E[{}]_B[{}]_acc_P[{}].png'.
+    plt.savefig('../save/new/fed_{}_{}_{}_C[{}]_iid[{}]_E[{}]_B[{}]_acc_P[{}].png'.
                 format(args.dataset, args.model, args.epochs, args.frac,
                        args.iid, args.local_ep, args.local_bs, args.threshold))
 
@@ -215,9 +234,9 @@ if __name__ == '__main__':
     plt.plot(range(len(test_acc)), test_acc, color='r')
     plt.ylabel('test_acc')
     plt.xlabel('Communication Rounds')
-    plt.savefig('../save/new/fed_{}_{}_user{}_globalepoch{}_C[{}]_iid[{}]_E[{}]_B[{}]_eta{}_mu{}_P[{}]_test_acc.png'.
+    plt.savefig('../save/new/fed_{}_{}_user{}_globalepoch{}_C[{}]_iid[{}]_E[{}]_B[{}]_eta{}_P[{}]_test_acc.png'.
                 format(args.dataset, args.model, args.num_users, args.epochs, args.frac,
-                       args.iid, args.local_ep, args.local_bs, args.lr, args.rho, args.threshold))
+                       args.iid, args.local_ep, args.local_bs, args.lr, args.threshold))
     
     # Plot test loss vs Communication rounds
     plt.figure()
@@ -225,6 +244,6 @@ if __name__ == '__main__':
     plt.plot(range(len(test_loss)), test_loss, color='r')
     plt.ylabel('test_loss')
     plt.xlabel('Communication Rounds')
-    plt.savefig('../save/new/fed_{}_{}_user{}_globalepoch{}_C[{}]_iid[{}]_E[{}]_B[{}]_eta{}_mu{}_P[{}]_test_loss.png'.
+    plt.savefig('../save/new/fed_{}_{}_user{}_globalepoch{}_C[{}]_iid[{}]_E[{}]_B[{}]_eta{}_P[{}]_test_loss.png'.
                 format(args.dataset, args.model, args.num_users, args.epochs, args.frac,
-                       args.iid, args.local_ep, args.local_bs, args.lr, args.rho, args.threshold))
+                       args.iid, args.local_ep, args.local_bs, args.lr, args.threshold))
