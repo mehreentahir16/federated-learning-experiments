@@ -12,7 +12,7 @@ def args_parser():
                         help="the number of local epochs: E")
     parser.add_argument('--local_bs', type=int, default = 50,
                         help="local batch size: B")
-    parser.add_argument('--lr', type=float, default = 0.01,
+    parser.add_argument('--lr', type=float, default = 0.0001,
                         help='learning rate')
     parser.add_argument('--model', type=str, default='mnist_cnn', help='model name')
     parser.add_argument('--dataset', type=str, default='mnist', help="name \
