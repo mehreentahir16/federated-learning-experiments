@@ -29,7 +29,7 @@ class LocalUpdate(object):
         trainloader = DataLoader(DatasetSplit(dataset, idxs_train), batch_size=self.args.local_bs, shuffle=True)
         return trainloader
 
-    def update_weights(self, model, global_round, alpha, theta, local_epoch):
+    def update_weights(self, model, global_round, alpha, theta):
         local_sum = {}
         model.train()
         epoch_loss = []
@@ -37,7 +37,7 @@ class LocalUpdate(object):
         model_prev = copy.deepcopy(model.state_dict())
         alpha_prev = copy.deepcopy(alpha)
     
-        for iter in range(local_epoch):
+        for iter in range(self.args.local_ep):
             batch_loss = []
             for batch_idx, (images, labels) in enumerate(self.trainloader):
                 images, labels = images.to(self.args.device), labels.to(self.args.device)

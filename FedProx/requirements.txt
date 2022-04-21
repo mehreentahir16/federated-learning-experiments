@@ -1,6 +1,0 @@
-torch
-torchvision
-numpy
-tensorboardx
-matplotlib
-tqdm

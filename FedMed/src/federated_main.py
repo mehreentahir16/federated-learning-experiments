@@ -92,6 +92,9 @@ if __name__ == '__main__':
 
             stragglers_indices = np.argwhere(heterogenous_epoch_list < args.local_ep)
 
+            # for index in stragglers_indices:
+            #     time.sleep(random.uniform(5, 50))
+
             idxs_active = np.delete(idxs_users, stragglers_indices)
             
             for i in range(len(idxs_active)):
@@ -196,7 +199,7 @@ if __name__ == '__main__':
     print(f' \n Results after {args.epochs} global rounds of training:')
     print("|---- Test Accuracy: {:.2f}%".format(100*test_acc[-1]))
 
-    file_name = '../save/{}_{}.pkl'.format(args.file_name, args.seed)
+    file_name = '../save/{}_{}_iid[{}]_E[{}].pkl'.format(args.file_name, args.seed, args.iid, args.epochs)
 
     with open(file_name, 'wb') as f:
         pickle.dump([train_loss, test_acc], f)

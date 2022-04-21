@@ -6,7 +6,7 @@ def args_parser():
                         help="number of users: K")
     parser.add_argument('--frac', type=float, default = 0.1,
                         help='the fraction of clients: C')
-    parser.add_argument('--epochs', type=int, default = 100,
+    parser.add_argument('--epochs', type=int, default = 50,
                         help="number of rounds of training")
     parser.add_argument('--local_ep', type=int, default = 10,
                         help="the number of local epochs: E")
@@ -14,12 +14,12 @@ def args_parser():
                         help="local batch size: B")
     parser.add_argument('--lr', type=float, default = 0.01,
                         help='learning rate')
-    parser.add_argument('--rho', type=float, default = 0.01,
+    parser.add_argument('--rho', type=float, default = 0.1,
                         help='hpy')
     parser.add_argument('--model', type=str, default='mnist_cnn', help='model name')
     parser.add_argument('--dataset', type=str, default='mnist', help="name \
                         of dataset")
-    parser.add_argument('--iid', type=int, default=0,
+    parser.add_argument('--iid', type=int, default=1,
                         help='Default set to IID. Set to 0 for non-IID.')
     parser.add_argument('--unequal', type=int, default=0,
                         help='whether to use unequal data splits for  \

@@ -60,18 +60,28 @@ if __name__ == '__main__':
  
         idxs_users = np.random.choice(range(args.num_users), m, replace=False)
 
-        heterogenous_epoch_list = generateLocalEpochs(size=m, args=args)
-        heterogenous_epoch_list = np.array(heterogenous_epoch_list)
+        if args.threshold == 0:
+            for idx in idxs_users:
+                local_model = LocalUpdate(args=args, dataset=train_dataset, idxs=user_groups[idx], logger=logger)
+                w, loss = local_model.update_weights(model=copy.deepcopy(global_model), global_round=epoch)
+                local_weights.append(copy.deepcopy(w))
+                local_losses.append(copy.deepcopy(loss))
+        else:
+            heterogenous_epoch_list = generateLocalEpochs(size=m, args=args)
+            heterogenous_epoch_list = np.array(heterogenous_epoch_list)
 
-        stragglers_indices = np.argwhere(heterogenous_epoch_list < args.local_ep)
+            stragglers_indices = np.argwhere(heterogenous_epoch_list < args.local_ep)
 
-        idxs_active = np.delete(idxs_users, stragglers_indices)
+            # for index in stragglers_indices:
+            #     time.sleep(random.uniform(5, 50))
 
-        for idx in idxs_active:
-            local_model = LocalUpdate(args=args, dataset=train_dataset, idxs=user_groups[idx], logger=logger)
-            w, loss = local_model.update_weights(model=copy.deepcopy(global_model), global_round=epoch)
-            local_weights.append(copy.deepcopy(w))
-            local_losses.append(copy.deepcopy(loss))
+            idxs_active = np.delete(idxs_users, stragglers_indices)
+
+            for idx in idxs_active:
+                local_model = LocalUpdate(args=args, dataset=train_dataset, idxs=user_groups[idx], logger=logger)
+                w, loss = local_model.update_weights(model=copy.deepcopy(global_model), global_round=epoch)
+                local_weights.append(copy.deepcopy(w))
+                local_losses.append(copy.deepcopy(loss))
 
         global_weights = average_weights(local_weights)
 
@@ -103,7 +113,7 @@ if __name__ == '__main__':
     print(f' \n Results after {args.epochs} global rounds of training:')
     print("|---- Test Accuracy: {:.2f}%".format(100*test_acc[-1]))
 
-    file_name = '../save/new/{}_{}.pkl'.format(args.file_name, args.seed)
+    file_name = '../save/new/{}_{}_iid[{}]_E[{}].pkl'.format(args.file_name, args.seed, args.iid, args.epochs)
 
     with open(file_name, 'wb') as f:
         pickle.dump([train_loss, test_acc], f)

@@ -33,7 +33,7 @@ class LocalUpdate(object):
                                  batch_size=self.args.local_bs, shuffle=True)
         return trainloader
 
-    def update_weights(self, model, global_round, alpha, alpha_server, theta, local_epoch):
+    def update_weights(self, model, global_round, alpha, alpha_server, theta):
         local_sum = {}
         control_update = {}
         model.train()
@@ -43,7 +43,7 @@ class LocalUpdate(object):
         model.load_state_dict(theta)
         alpha_temp = copy.deepcopy(alpha)
 
-        for iter in range(local_epoch):
+        for iter in range(self.args.local_ep):
             batch_loss = []
             for batch_idx, (images, labels) in enumerate(self.trainloader):
                 images, labels = images.to(self.args.device), labels.to(self.args.device)

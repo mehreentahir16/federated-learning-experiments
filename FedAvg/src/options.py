@@ -4,9 +4,9 @@ def args_parser():
     parser = argparse.ArgumentParser()
     parser.add_argument('--num_users', type=int, default = 100,
                         help="number of users: K")
-    parser.add_argument('--frac', type=float, default = 1,
+    parser.add_argument('--frac', type=float, default = 0.1,
                         help='the fraction of clients: C')
-    parser.add_argument('--epochs', type=int, default = 100,
+    parser.add_argument('--epochs', type=int, default = 50,
                         help="number of rounds of training")
     parser.add_argument('--local_ep', type=int, default = 10,
                         help="the number of local epochs: E")
@@ -26,7 +26,7 @@ def args_parser():
                         help='file name.')
     parser.add_argument('--seed', type=int, default = 42,
                         help="random seed")
-    parser.add_argument('--threshold', type=float, default = 0,
+    parser.add_argument('--threshold', type=float, default = 90,
                         help="client threshold to random choose local epochs")
     parser.add_argument('--optimizer', type=str, default='sgd', help="type \
                         of optimizer")

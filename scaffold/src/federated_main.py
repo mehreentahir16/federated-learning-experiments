@@ -78,7 +78,7 @@ if __name__ == '__main__':
 
         if args.threshold == 0:
             for idx in idxs_users: 
-                loss, lsum, control_msg, model[idx], alpha[idx] = local_model[idx].update_weights(model[idx], global_round=epoch, alpha= copy.deepcopy(alpha[idx]), alpha_server=copy.deepcopy(alpha_server), theta=copy.deepcopy(theta), local_epoch=10)
+                loss, lsum, control_msg, model[idx], alpha[idx] = local_model[idx].update_weights(model[idx], global_round=epoch, alpha= copy.deepcopy(alpha[idx]), alpha_server=copy.deepcopy(alpha_server), theta=copy.deepcopy(theta))
             
                 local_losses.append(copy.deepcopy(loss))
                 local_sum.append(copy.deepcopy(lsum))
@@ -88,8 +88,15 @@ if __name__ == '__main__':
             heterogenous_epoch_list = generateLocalEpochs(size=m, args=args)
             heterogenous_epoch_list = np.array(heterogenous_epoch_list)
 
-            for idx, ep in zip(idxs_users, heterogenous_epoch_list): 
-                loss, lsum, control_msg, model[idx], alpha[idx] = local_model[idx].update_weights(model[idx], global_round=epoch, alpha= copy.deepcopy(alpha[idx]), alpha_server=copy.deepcopy(alpha_server), theta=copy.deepcopy(theta), local_epoch=ep)
+            stragglers_indices = np.argwhere(heterogenous_epoch_list < args.local_ep)
+
+            # for index in stragglers_indices:
+            #     time.sleep(random.uniform(5, 50))
+
+            idxs_active = np.delete(idxs_users, stragglers_indices)
+
+            for idx in idxs_active: 
+                loss, lsum, control_msg, model[idx], alpha[idx] = local_model[idx].update_weights(model[idx], global_round=epoch, alpha= copy.deepcopy(alpha[idx]), alpha_server=copy.deepcopy(alpha_server), theta=copy.deepcopy(theta))
             
                 local_losses.append(copy.deepcopy(loss))
                 local_sum.append(copy.deepcopy(lsum))

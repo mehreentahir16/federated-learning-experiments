@@ -7,9 +7,9 @@ def args_parser():
                         help="number of users: K")
     parser.add_argument('--frac', type=float, default = 0.1,
                         help='the fraction of clients: C')
-    parser.add_argument('--epochs', type=int, default = 100,
+    parser.add_argument('--epochs', type=int, default = 50,
                         help="number of rounds of training")
-    parser.add_argument('--local_ep', type=int, default = 10,
+    parser.add_argument('--local_ep', type=int, default = 5,
                         help="the number of local epochs: E")
     parser.add_argument('--local_bs', type=int, default = 50,
                         help="local batch size: B")
@@ -17,7 +17,7 @@ def args_parser():
                         help='learning rate')
     parser.add_argument('--rho', type=float, default = 0.1,
                         help='hpy')
-    parser.add_argument('--prob', type=float, default = 0,
+    parser.add_argument('--prob', type=float, default = 0.5,
                         help='jump communication prob')
     parser.add_argument('--model', type=str, default='mnist_cnn', help='model name')
     parser.add_argument('--dataset', type=str, default='mnist', help="name \
